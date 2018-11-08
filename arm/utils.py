@@ -7,8 +7,11 @@ import fcntl
 import subprocess
 import shutil
 import requests
+import json
 
 from config import cfg
+import urllib
+import getpass
 
 
 def notify(title, body):
@@ -57,6 +60,33 @@ def scan_emby():
     else:
         logging.info("EMBY_REFRESH config parameter is false.  Skipping emby scan.")
 
+
+def scan_kodi():
+    if cfg['KODI_REFRESH']:
+        logging.info("Sending Kodi library scan request")
+        #data = urllib.parse.urlencode({"jsonrpc": "2.0", "method": "VideoLibrary.Scan", "id": "1"},quote_via=urllib.parse.quote_plus).encode('ascii')
+        data = [{'jsonrpc': '2.0', 'method': 'VideoLibrary.Scan', 'id': '1'}]
+ 
+
+        passman = urllib.request.HTTPPasswordMgrWithDefaultRealm()
+        passman.add_password(None, cfg['KODI_HOST']+":"+cfg['KODI_PORT'], cfg['KODI_USER'], cfg['KODI_PASSWORD'])
+        authhandler = urllib.request.HTTPBasicAuthHandler(passman)
+        opener = urllib.request.build_opener(authhandler)
+        urllib.request.install_opener(opener)
+        
+        headers= {"Content-Type" : "application/json"}
+        url = "http://"+cfg['KODI_HOST']+":"+cfg['KODI_PORT']+"/jsonrpc"
+
+        resp = requests.post(url, json=data)
+
+        json_data = json.loads(resp.text)[0]
+        
+        if json_data["result"] == "OK":
+            print("Kodi Library Scan request successful")
+        else:
+            print("Kodi Library Scan request failed. Result = " + json_data["result"])
+      #  urllib2.install_opener(urllib2.build_opener(urllib2.HTTPBasicAuthHandler(passman)))
+      #  f = urllib2.urlopen(req, data='{"jsonrpc": "2.0", "method": "VideoLibrary.Scan", "id": "1"}').read()
 
 def move_files(basepath, filename, hasnicetitle, videotitle, ismainfeature=False):
     """Move files into final media directory
@@ -262,3 +292,6 @@ def set_permissions(directory_to_traverse):
         err = "Permissions setting failed as: " + str(e)
         logging.error(err)
         return False
+    
+    
+scan_kodi()

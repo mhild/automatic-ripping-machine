@@ -195,6 +195,7 @@ def main(logfile, disc):
                 if cfg['SET_MEDIA_PERMISSIONS']:
                     perm_result = utils.set_permissions(final_directory)
                     logging.info("Permissions set successfully: " + str(perm_result))
+                utils.scan_kodi()
                 utils.notify("ARM notification", str(disc.videotitle) + " processing complete.")
                 logging.info("ARM processing complete")
                 # exit
