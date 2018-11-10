@@ -195,7 +195,7 @@ def main(logfile, disc):
                 if cfg['SET_MEDIA_PERMISSIONS']:
                     perm_result = utils.set_permissions(final_directory)
                     logging.info("Permissions set successfully: " + str(perm_result))
-                utils.scan_kodi()
+                
                 utils.notify("ARM notification", str(disc.videotitle) + " processing complete.")
                 logging.info("ARM processing complete")
                 # exit
@@ -212,6 +212,7 @@ def main(logfile, disc):
             handbrake.handbrake_all(hbinpath, hboutpath, logfile, disc)
             disc.eject()
 
+
         # report errors if any
         if disc.errors:
             errlist = ', '.join(disc.errors)
@@ -221,6 +222,7 @@ def main(logfile, disc):
         else:
             if cfg['NOTIFY_TRANSCODE']:
                 utils.notify("ARM notification", str(disc.videotitle) + " processing complete.")
+            utils.scan_kodi()
             logging.info("ARM processing complete")
 
         # Clean up bluray backup
