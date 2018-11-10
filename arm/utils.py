@@ -43,6 +43,9 @@ def notify(title, body):
         except:  # noqa: E722
             logging.error("Failed sending PushOver notification.  Continueing processing...")
 
+    if cfg['KODI_NOTIFY']:
+        data = [{'jsonrpc': '2.0', 'method': 'GUI.ShowNotification', 'params': {'title': title, 'message': body}, 'id': '1'}]
+        kodi_rpc_call(data)
 
 def scan_emby():
     """Trigger a media scan on Emby"""
@@ -60,26 +63,41 @@ def scan_emby():
     else:
         logging.info("EMBY_REFRESH config parameter is false.  Skipping emby scan.")
 
+def kodi_rpc_call(data):
+
+    logging.info("Sending Kodi rpc-call")
+    #data = urllib.parse.urlencode({"jsonrpc": "2.0", "method": "VideoLibrary.Scan", "id": "1"},quote_via=urllib.parse.quote_plus).encode('ascii')
+    #data = [{'jsonrpc': '2.0', 'method': 'VideoLibrary.Scan', 'id': '1'}]
+    
+    
+    passman = urllib.request.HTTPPasswordMgrWithDefaultRealm()
+    passman.add_password(None, cfg['KODI_HOST']+":"+cfg['KODI_PORT'], cfg['KODI_USER'], cfg['KODI_PASSWORD'])
+    authhandler = urllib.request.HTTPBasicAuthHandler(passman)
+    opener = urllib.request.build_opener(authhandler)
+    urllib.request.install_opener(opener)
+    
+    headers= {"Content-Type" : "application/json"}
+    url = "http://"+cfg['KODI_HOST']+":"+cfg['KODI_PORT']+"/jsonrpc"
+    
+    resp = requests.post(url, json=data)
+    
+    json_data = json.loads(resp.text)[0]
+    
+    if json_data["result"] == "OK":
+        print("Kodi rpc-call successful")
+    else:
+        print("Kodi rpc-call failed. Result = " + json_data["result"])
+        
+    return json_data
+
 
 def scan_kodi():
     if cfg['KODI_REFRESH']:
         logging.info("Sending Kodi library scan request")
         #data = urllib.parse.urlencode({"jsonrpc": "2.0", "method": "VideoLibrary.Scan", "id": "1"},quote_via=urllib.parse.quote_plus).encode('ascii')
         data = [{'jsonrpc': '2.0', 'method': 'VideoLibrary.Scan', 'id': '1'}]
- 
 
-        passman = urllib.request.HTTPPasswordMgrWithDefaultRealm()
-        passman.add_password(None, cfg['KODI_HOST']+":"+cfg['KODI_PORT'], cfg['KODI_USER'], cfg['KODI_PASSWORD'])
-        authhandler = urllib.request.HTTPBasicAuthHandler(passman)
-        opener = urllib.request.build_opener(authhandler)
-        urllib.request.install_opener(opener)
-        
-        headers= {"Content-Type" : "application/json"}
-        url = "http://"+cfg['KODI_HOST']+":"+cfg['KODI_PORT']+"/jsonrpc"
-
-        resp = requests.post(url, json=data)
-
-        json_data = json.loads(resp.text)[0]
+        kodi_rpc_call(data)
         
         if json_data["result"] == "OK":
             print("Kodi Library Scan request successful")
@@ -294,4 +312,4 @@ def set_permissions(directory_to_traverse):
         return False
     
     
-scan_kodi()
+notify("test", "body")
