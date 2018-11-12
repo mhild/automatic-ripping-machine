@@ -12,6 +12,7 @@ import json
 from config import cfg
 import urllib
 import getpass
+from _testcapi import traceback_print
 
 
 def notify(title, body):
@@ -97,13 +98,17 @@ def scan_kodi():
         #data = urllib.parse.urlencode({"jsonrpc": "2.0", "method": "VideoLibrary.Scan", "id": "1"},quote_via=urllib.parse.quote_plus).encode('ascii')
         data = [{'jsonrpc': '2.0', 'method': 'VideoLibrary.Scan', 'id': '1'}]
 
-        kodi_rpc_call(data)
+        try:
+            kodi_rpc_call(data)
+        except Exception:
+            err = "Kodi Library Scan request failed. (Exception)"
+            logging.error(err)
         
         if json_data["result"] == "OK":
             print("Kodi Library Scan request successful")
         else:
             print("Kodi Library Scan request failed. Result = " + json_data["result"])
-      #  urllib2.install_opener(urllib2.build_opener(urllib2.HTTPBasicAuthHandler(passman)))
+  #  urllib2.install_opener(urllib2.build_opener(urllib2.HTTPBasicAuthHandler(passman)))
       #  f = urllib2.urlopen(req, data='{"jsonrpc": "2.0", "method": "VideoLibrary.Scan", "id": "1"}').read()
 
 def move_files(basepath, filename, hasnicetitle, videotitle, ismainfeature=False):
