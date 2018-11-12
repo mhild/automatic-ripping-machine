@@ -100,14 +100,15 @@ def scan_kodi():
 
         try:
             kodi_rpc_call(data)
+            if json_data["result"] == "OK":
+                logging.info("Kodi Library Scan request successful")
+            else:
+                logging.info("Kodi Library Scan request failed. Result = " + json_data["result"])
         except Exception:
             err = "Kodi Library Scan request failed. (Exception)"
             logging.error(err)
         
-        if json_data["result"] == "OK":
-            print("Kodi Library Scan request successful")
-        else:
-            print("Kodi Library Scan request failed. Result = " + json_data["result"])
+    
   #  urllib2.install_opener(urllib2.build_opener(urllib2.HTTPBasicAuthHandler(passman)))
       #  f = urllib2.urlopen(req, data='{"jsonrpc": "2.0", "method": "VideoLibrary.Scan", "id": "1"}').read()
 
