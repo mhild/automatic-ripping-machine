@@ -47,7 +47,14 @@ def notify(title, body):
     if cfg['KODI_NOTIFY']:
         data = [{'jsonrpc': '2.0', 'method': 'GUI.ShowNotification', 'params': {'title': title, 'message': body}, 'id': '1'}]
         kodi_rpc_call(data)
+        if json_data["result"] == "OK":
+            logging.info("Kodi notify request successful")
+        elif json_data["result"] == "Failed":
+            logging.info("Kodi notify request failed with " + json_data["error"])
 
+        else:
+            logging.info("Kodi notify request failed. Result = " + json_data["result"])
+        
 def scan_emby():
     """Trigger a media scan on Emby"""
 
@@ -80,16 +87,22 @@ def kodi_rpc_call(data):
     headers= {"Content-Type" : "application/json"}
     url = "http://"+cfg['KODI_HOST']+":"+cfg['KODI_PORT']+"/jsonrpc"
     
-    resp = requests.post(url, json=data)
-    
-    json_data = json.loads(resp.text)[0]
-    
-    if json_data["result"] == "OK":
-        print("Kodi rpc-call successful")
-    else:
-        print("Kodi rpc-call failed. Result = " + json_data["result"])
+    try:
+        resp = requests.post(url, json=data)
+    except requests.exceptions.RequestException as e:  # This is the correct syntax
+        logging.error("Exception during Kodi rpc-call: "+e)
+        json_data["result"] = "Failed"
+        json_data["error"] = e
+    else:   
+        json_data = json.loads(resp.text)[0]
+         
+        if json_data["result"] == "OK":
+            print("Kodi rpc-call successful")
+        else:
+            print("Kodi rpc-call failed. Result = " + json_data["result"])
         
-    return json_data
+    finally:
+        return json_data
 
 
 def scan_kodi():
@@ -98,15 +111,14 @@ def scan_kodi():
         #data = urllib.parse.urlencode({"jsonrpc": "2.0", "method": "VideoLibrary.Scan", "id": "1"},quote_via=urllib.parse.quote_plus).encode('ascii')
         data = [{'jsonrpc': '2.0', 'method': 'VideoLibrary.Scan', 'id': '1'}]
 
-        try:
-            kodi_rpc_call(data)
-            if json_data["result"] == "OK":
-                logging.info("Kodi Library Scan request successful")
-            else:
-                logging.info("Kodi Library Scan request failed. Result = " + json_data["result"])
-        except Exception:
-            err = "Kodi Library Scan request failed. (Exception)"
-            logging.error(err)
+        kodi_rpc_call(data)
+        if json_data["result"] == "OK":
+            logging.info("Kodi Library Scan request successful")
+        elif json_data["result"] == "Failed":
+            logging.info("Kodi Library Scan request failed with " + json_data["error"])
+
+        else:
+            logging.info("Kodi Library Scan request failed. Result = " + json_data["result"])
         
     
   #  urllib2.install_opener(urllib2.build_opener(urllib2.HTTPBasicAuthHandler(passman)))
