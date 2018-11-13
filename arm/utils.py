@@ -46,7 +46,7 @@ def notify(title, body):
 
     if cfg['KODI_NOTIFY']:
         data = [{'jsonrpc': '2.0', 'method': 'GUI.ShowNotification', 'params': {'title': title, 'message': body}, 'id': '1'}]
-        kodi_rpc_call(data)
+        json_data = kodi_rpc_call(data)
         if json_data["result"] == "OK":
             logging.info("Kodi notify request successful")
         elif json_data["result"] == "Failed":
