@@ -99,7 +99,7 @@ def makemkv(logfile, disc):
         # print("Error: " + mkv)
         return None
 
-    disc.eject()
+    #disc.eject()
 
     logging.info("Exiting MakeMKV processing with return value of: " + rawpath)
     return(rawpath)
