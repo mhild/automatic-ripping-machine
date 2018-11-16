@@ -198,6 +198,7 @@ def main(logfile, disc):
                 
                 utils.notify("ARM notification", str(disc.videotitle) + " processing complete.")
                 utils.scan_kodi()
+                disc.eject()
                 logging.info("ARM processing complete")
                 # exit
                 sys.exit()
