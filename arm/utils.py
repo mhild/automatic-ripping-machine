@@ -111,7 +111,7 @@ def scan_kodi():
         #data = urllib.parse.urlencode({"jsonrpc": "2.0", "method": "VideoLibrary.Scan", "id": "1"},quote_via=urllib.parse.quote_plus).encode('ascii')
         data = [{'jsonrpc': '2.0', 'method': 'VideoLibrary.Scan', 'id': '1'}]
 
-        kodi_rpc_call(data)
+        json_data = kodi_rpc_call(data)
         if json_data["result"] == "OK":
             logging.info("Kodi Library Scan request successful")
         elif json_data["result"] == "Failed":
