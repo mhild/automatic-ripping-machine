@@ -197,6 +197,7 @@ def main(logfile, disc):
                     logging.info("Permissions set successfully: " + str(perm_result))
                 
                 utils.notify("ARM notification", str(disc.videotitle) + " processing complete.")
+                utils.scan_kodi()
                 logging.info("ARM processing complete")
                 # exit
                 sys.exit()
@@ -222,7 +223,6 @@ def main(logfile, disc):
         else:
             if cfg['NOTIFY_TRANSCODE']:
                 utils.notify("ARM notification", str(disc.videotitle) + " processing complete.")
-            utils.scan_kodi()
             logging.info("ARM processing complete")
 
         # Clean up bluray backup
