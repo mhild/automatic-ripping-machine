@@ -87,7 +87,7 @@ def kodi_rpc_call(data):
 
     logging.info("Sending Kodi rpc-call")
     
-    if is_remote_port_open(cfg['KODI_HOST'], cfg['KODI_PORT']):
+    if is_remote_port_open(cfg['KODI_HOST'], int(cfg['KODI_PORT'])):
         logging.info("Port is reachable")
     else:
         logging.info("Port is unreachable - skipping")
