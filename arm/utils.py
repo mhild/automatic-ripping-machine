@@ -11,6 +11,7 @@ import json
 
 from config import cfg
 import urllib
+import urllib3
 import getpass
 from _testcapi import traceback_print
 
@@ -90,6 +91,18 @@ def kodi_rpc_call(data):
     try:
         resp = requests.post(url, json=data)
     except requests.exceptions.RequestException as e:  # This is the correct syntax
+        logging.error("Exception during Kodi rpc-call: "+e)
+        json_data["result"] = "Failed"
+        json_data["error"] = e
+    except requests.exceptions.ConnectionError as e:
+        logging.error("Exception during Kodi rpc-call: "+e)
+        json_data["result"] = "Failed"
+        json_data["error"] = e
+    except urllib3.exceptions.HTTPError as e:
+        logging.error("Exception during Kodi rpc-call: "+e)
+        json_data["result"] = "Failed"
+        json_data["error"] = e  
+    except IOError as e:  # This is the correct syntax
         logging.error("Exception during Kodi rpc-call: "+e)
         json_data["result"] = "Failed"
         json_data["error"] = e
