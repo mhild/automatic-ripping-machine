@@ -22,9 +22,9 @@ def is_remote_port_open(host, port):
     sock.settimeout(3)
     result = sock.connect_ex((host,port))
     if result == 0:
-       return true
+       return True
     else:
-       return false
+       return False
 
 def notify(title, body):
     # Send notificaions
