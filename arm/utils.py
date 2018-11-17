@@ -9,12 +9,22 @@ import shutil
 import requests
 import json
 
+import socket
+
 from config import cfg
 import urllib
 import urllib3
 import getpass
 from _testcapi import traceback_print
 
+def is_remote_port_open(host, port):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.settimeout(3)
+    result = sock.connect_ex((host,port))
+    if result == 0:
+       return true
+    else:
+       return false
 
 def notify(title, body):
     # Send notificaions
@@ -52,7 +62,8 @@ def notify(title, body):
             logging.info("Kodi notify request successful")
         elif json_data["result"] == "Failed":
             logging.info("Kodi notify request failed with " + json_data["error"])
-
+        elif json_data["result"] == "unreachable":
+            logging.info("Kodi Library Scan request skipped:" + json_data["error"])
         else:
             logging.info("Kodi notify request failed. Result = " + json_data["result"])
         
@@ -75,6 +86,14 @@ def scan_emby():
 def kodi_rpc_call(data):
 
     logging.info("Sending Kodi rpc-call")
+    
+    if is_remote_port_open(cfg['KODI_HOST'], cfg['KODI_PORT']):
+        logging.info("Port is reachable")
+    else:
+        logging.info("Port is unreachable - skipping")
+        json_data["result"] = "unreachable"
+        json_data["error"] = "Port is unreachable - skipping"
+        return json_data
     #data = urllib.parse.urlencode({"jsonrpc": "2.0", "method": "VideoLibrary.Scan", "id": "1"},quote_via=urllib.parse.quote_plus).encode('ascii')
     #data = [{'jsonrpc': '2.0', 'method': 'VideoLibrary.Scan', 'id': '1'}]
     
@@ -90,19 +109,20 @@ def kodi_rpc_call(data):
     
     try:
         resp = requests.post(url, json=data)
-    except requests.exceptions.RequestException as e:  # This is the correct syntax
+        e = str(resp.reason)
+    except requests.exceptions.RequestException:  # This is the correct syntax
         logging.error("Exception during Kodi rpc-call: "+e)
         json_data["result"] = "Failed"
         json_data["error"] = e
-    except requests.exceptions.ConnectionError as e:
+    except requests.exceptions.ConnectionError:
         logging.error("Exception during Kodi rpc-call: "+e)
         json_data["result"] = "Failed"
         json_data["error"] = e
-    except urllib3.exceptions.HTTPError as e:
+    except urllib3.exceptions.HTTPError:
         logging.error("Exception during Kodi rpc-call: "+e)
         json_data["result"] = "Failed"
         json_data["error"] = e  
-    except IOError as e:  # This is the correct syntax
+    except IOError:  # This is the correct syntax
         logging.error("Exception during Kodi rpc-call: "+e)
         json_data["result"] = "Failed"
         json_data["error"] = e
@@ -129,7 +149,9 @@ def scan_kodi():
             logging.info("Kodi Library Scan request successful")
         elif json_data["result"] == "Failed":
             logging.info("Kodi Library Scan request failed with " + json_data["error"])
-
+            
+        elif json_data["result"] == "unreachable":
+            logging.info("Kodi Library Scan request skipped:" + json_data["error"])
         else:
             logging.info("Kodi Library Scan request failed. Result = " + json_data["result"])
         
