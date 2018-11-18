@@ -20,7 +20,12 @@ from _testcapi import traceback_print
 def is_remote_port_open(host, port):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.settimeout(3)
-    result = sock.connect_ex((host,port))
+
+    try:
+        result = sock.connect_ex((host,port))
+    except socket.gaierror:
+         result = -1
+    
     if result == 0:
        return True
     else:
@@ -91,8 +96,10 @@ def kodi_rpc_call(data):
         logging.info("Port is reachable")
     else:
         logging.info("Port is unreachable - skipping")
-        json_data["result"] = "unreachable"
-        json_data["error"] = "Port is unreachable - skipping"
+        json_data = {
+                        "result" : "unreachable",
+                        "error" : "Port is unreachable - skipping"
+        }
         return json_data
     #data = urllib.parse.urlencode({"jsonrpc": "2.0", "method": "VideoLibrary.Scan", "id": "1"},quote_via=urllib.parse.quote_plus).encode('ascii')
     #data = [{'jsonrpc': '2.0', 'method': 'VideoLibrary.Scan', 'id': '1'}]
@@ -363,3 +370,15 @@ def set_permissions(directory_to_traverse):
         err = "Permissions setting failed as: " + str(e)
         logging.error(err)
         return False
+    
+    
+# data = [{'jsonrpc': '2.0', 'method': 'GUI.ShowNotification', 'params': {'title': 'Test', 'message': 'Hallo'}, 'id': '1'}]
+# json_data = kodi_rpc_call(data)
+# if json_data["result"] == "OK":
+#     print("Kodi notify request successful")
+# elif json_data["result"] == "Failed":
+#     print("Kodi notify request failed with " + json_data["error"])
+# elif json_data["result"] == "unreachable":
+#     print("Kodi Library Scan request skipped:" + json_data["error"])
+# else:
+#     print("Kodi notify request failed. Result = " + json_data["result"])
