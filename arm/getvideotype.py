@@ -83,21 +83,18 @@ def getdvdtype(disc):
 def cleanupstring(string):
     # clean up title string to pass to OMDbapi.org
     string = string.strip()
-    return re.sub('[_ ]', "+", string)
-
-def sanitizeTitle(string):
-    ret = re.sub("[^A-Za-z0-9\ _-]+", " ", string)
+    
+    string = re.sub("[^A-Za-z0-9\ _-]+", "+", string)
     
     for pat in cfg['TITLE_IGNORE_WORDS']:
-        ret = re.sub(pat, "", ret)
-    
-    return ret
+        string = re.sub(pat, "", string)
+        
+    return string
 
-def callwebservice(omdb_api_key, dvd_title_raw, year=""):
+
+def callwebservice(omdb_api_key, dvd_title, year=""):
     """ Queries OMDbapi.org for title information and parses if it's a movie
         or a tv series """
-
-    dvd_title = sanitizeTitle(dvd_title_raw)
 
     logging.debug("***Calling webservice with Title: " + dvd_title + " and Year: " + year)
     try:
