@@ -93,9 +93,11 @@ def sanitizeTitle(string):
     
     return ret
 
-def callwebservice(omdb_api_key, dvd_title, year=""):
+def callwebservice(omdb_api_key, dvd_title_raw, year=""):
     """ Queries OMDbapi.org for title information and parses if it's a movie
         or a tv series """
+
+    dvd_title = sanitizeTitle(dvd_title_raw)
 
     logging.debug("***Calling webservice with Title: " + dvd_title + " and Year: " + year)
     try:
