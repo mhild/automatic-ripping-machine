@@ -85,6 +85,13 @@ def cleanupstring(string):
     string = string.strip()
     return re.sub('[_ ]', "+", string)
 
+def sanitizeTitle(string):
+    ret = re.sub("[^A-Za-z0-9\ _-]+", " ", string)
+    
+    for pat in cfg['TITLE_IGNORE_WORDS']:
+        ret = re.sub(pat, "", ret)
+    
+    return ret
 
 def callwebservice(omdb_api_key, dvd_title, year=""):
     """ Queries OMDbapi.org for title information and parses if it's a movie
@@ -115,3 +122,4 @@ def main(disc):
     logging.debug("Entering getvideotype module")
     dvd_type, year = getdvdtype(disc)
     return(dvd_type, year)
+
