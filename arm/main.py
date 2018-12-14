@@ -197,7 +197,7 @@ def main(logfile, disc):
                     logging.info("Permissions set successfully: " + str(perm_result))
                 
                 utils.notify("ARM notification", str(disc.videotitle) + " processing complete.")
-                utils.scan_kodi()
+                utils.scan_kodi_video()
                 disc.eject()
                 logging.info("ARM processing complete")
                 # exit
@@ -240,6 +240,7 @@ def main(logfile, disc):
         if utils.rip_music(disc, logfile):
             utils.notify("ARM notification", "Music CD: " + disc.label + " processing complete.")
             utils.scan_emby()
+            utils.scan_kodi_audio()
         else:
             logging.info("Music rip failed.  See previous errors.  Exiting.")
 

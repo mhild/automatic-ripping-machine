@@ -145,9 +145,9 @@ def kodi_rpc_call(data):
         return json_data
 
 
-def scan_kodi():
+def scan_kodi_video():
     if cfg['KODI_REFRESH']:
-        logging.info("Sending Kodi library scan request")
+        logging.info("Sending Kodi video library scan request")
         #data = urllib.parse.urlencode({"jsonrpc": "2.0", "method": "VideoLibrary.Scan", "id": "1"},quote_via=urllib.parse.quote_plus).encode('ascii')
         data = [{'jsonrpc': '2.0', 'method': 'VideoLibrary.Scan', 'id': '1'}]
 
@@ -162,7 +162,24 @@ def scan_kodi():
         else:
             logging.info("Kodi Library Scan request failed. Result = " + json_data["result"])
         
-    
+def scan_kodi_audio():
+    if cfg['KODI_REFRESH']:
+        logging.info("Sending Kodi audio library scan request")
+        #data = urllib.parse.urlencode({"jsonrpc": "2.0", "method": "VideoLibrary.Scan", "id": "1"},quote_via=urllib.parse.quote_plus).encode('ascii')
+        data = [{'jsonrpc': '2.0', 'method': 'AudioLibrary.Scan', 'id': '1'}]
+
+        json_data = kodi_rpc_call(data)
+        if json_data["result"] == "OK":
+            logging.info("Kodi Library Scan request successful")
+        elif json_data["result"] == "Failed":
+            logging.info("Kodi Library Scan request failed with " + json_data["error"])
+            
+        elif json_data["result"] == "unreachable":
+            logging.info("Kodi Library Scan request skipped:" + json_data["error"])
+        else:
+            logging.info("Kodi Library Scan request failed. Result = " + json_data["result"])
+        
+       
   #  urllib2.install_opener(urllib2.build_opener(urllib2.HTTPBasicAuthHandler(passman)))
       #  f = urllib2.urlopen(req, data='{"jsonrpc": "2.0", "method": "VideoLibrary.Scan", "id": "1"}').read()
 
