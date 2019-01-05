@@ -144,6 +144,6 @@ def main(disc):
 # print(strurl.replace(omdb_api_key,'key_hidden'))
 # 
 # dvd_title_info_json = urllib.request.urlopen(strurl).read()
-
-print(dvd_title_info_json)
+# 
+# print(dvd_title_info_json)
         
