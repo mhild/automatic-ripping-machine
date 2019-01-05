@@ -98,7 +98,7 @@ def callwebservice(omdb_api_key, dvd_title, year=""):
 
     logging.debug("***Calling webservice with Title: " + dvd_title + " and Year: " + year)
     try:
-        params = {'t' : dvd_title_clean, 'y' : year, 'plot' : 'short', 'apikey' : omdb_api_key}
+        params = {'t' : dvd_title, 'y' : year, 'plot' : 'short', 'apikey' : omdb_api_key}
         strurl = "http://www.omdbapi.com/?"+urllib.parse.urlencode(params, doseq=False, safe='', encoding=None, errors=None, quote_via=urllib.parse.quote_plus)
         #strurl = "http://www.omdbapi.com/?t={1}&y={2}&plot=short&r=json&apikey={0}".format(omdb_api_key, dvd_title, year)
         logging.debug(strurl.replace(omdb_api_key,'key_hidden'))
