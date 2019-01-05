@@ -98,8 +98,10 @@ def callwebservice(omdb_api_key, dvd_title, year=""):
 
     logging.debug("***Calling webservice with Title: " + dvd_title + " and Year: " + year)
     try:
-        strurl = "http://www.omdbapi.com/?t={1}&y={2}&plot=short&r=json&apikey={0}".format(omdb_api_key, dvd_title, year)
-        logging.debug("http://www.omdbapi.com/?t={1}&y={2}&plot=short&r=json&apikey={0}".format("key_hidden", dvd_title, year))
+        params = {'t' : dvd_title_clean, 'y' : year, 'plot' : 'short', 'apikey' : omdb_api_key}
+        strurl = "http://www.omdbapi.com/?"+urllib.parse.urlencode(params, doseq=False, safe='', encoding=None, errors=None, quote_via=urllib.parse.quote_plus)
+        #strurl = "http://www.omdbapi.com/?t={1}&y={2}&plot=short&r=json&apikey={0}".format(omdb_api_key, dvd_title, year)
+        logging.debug(strurl.replace(omdb_api_key,'key_hidden'))
         dvd_title_info_json = urllib.request.urlopen(strurl).read()
     except Exception:
         logging.debug("Webservice failed")
@@ -116,9 +118,32 @@ def callwebservice(omdb_api_key, dvd_title, year=""):
             return doc['Type']
 
 
-def main(disc):
+def main(disc):        
 
     logging.debug("Entering getvideotype module")
     dvd_type, year = getdvdtype(disc)
     return(dvd_type, year)
 
+
+# 
+# dvd_title_clean = "THE DARK KNIGHT"
+# year = "2008"
+# omdb_api_key = "6ca2f025"
+# 
+# #dvd_type = callwebservice(omdb_api_key, dvd_title_clean, year)
+# 
+# 
+# 
+# #strurl = "http://www.omdbapi.com/?t={1}&y={2}&plot=short&r=json&apikey={0}".format(omdb_api_key, dvd_title_clean, year)
+# 
+# params = {'t' : dvd_title_clean, 'y' : year, 'plot' : 'short', 'apikey' : omdb_api_key}
+# strurl = "http://www.omdbapi.com/?"+urllib.parse.urlencode(params, doseq=False, safe='', encoding=None, errors=None, quote_via=urllib.parse.quote_plus)
+# 
+# 
+# #strurlenc = urllib.parse.urlencode(strurl, doseq=False, safe='', encoding=None, errors=None, quote_via=urllib.parse.quote_plus)
+# print(strurl.replace(omdb_api_key,'key_hidden'))
+# 
+# dvd_title_info_json = urllib.request.urlopen(strurl).read()
+
+print(dvd_title_info_json)
+        
