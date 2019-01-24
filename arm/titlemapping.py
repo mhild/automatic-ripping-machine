@@ -5,7 +5,7 @@
 import yaml
 
 #yamlfile = "/etc/arm/arm.yaml"
-yamlfile = "../titlemapping.yaml"
+yamlfile = "/etc/arm/titlemapping.yaml"
 # cfgfile = "/etc/arm/arm.conf"
 
 # if os.path.exists(yamlfile):
