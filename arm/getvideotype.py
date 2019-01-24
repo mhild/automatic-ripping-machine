@@ -10,7 +10,7 @@ import json
 import re
 
 from config import cfg
-
+from titlemapping import title_mapping
 
 def entry():
     """ Entry to program, parses arguments"""
@@ -62,6 +62,13 @@ def getdvdtype(disc):
                 logging.debug("Trying title: " + dvd_title_slice)
                 dvd_type = callwebservice(omdb_api_key, dvd_title_slice, year)
                 logging.debug("dvd_type: " + dvd_type)
+                
+            if dvd_type == "fail":
+                if title_mapping[disc.videotitle]:
+                    
+                    logging.debug("Calling webservice with title: " + title_mapping[disc.videotitle] + " and year: " + year)
+                    dvd_type = callwebservice(omdb_api_key, title_mapping[disc.videotitle], year)
+                    logging.debug("dvd_type: " + dvd_type)
 
             # if still fail, then try slicing off the last word in a loop
             while dvd_type == "fail" and dvd_title_clean.count('+') > 0:
