@@ -70,6 +70,8 @@ def getdvdtype(disc):
                         logging.debug("Calling webservice with title: " + title_mapping[disc.videotitle] + " and year: " + year)
                         dvd_type = callwebservice(omdb_api_key, title_mapping[disc.videotitle], year)
                         logging.debug("dvd_type: " + dvd_type)
+                else:
+                    logging.debug("no mapping for " + disc.videotitle)
 
             # if still fail, then try slicing off the last word in a loop
             while dvd_type == "fail" and dvd_title_clean.count('+') > 0:
