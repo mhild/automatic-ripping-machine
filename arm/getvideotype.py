@@ -64,11 +64,12 @@ def getdvdtype(disc):
                 logging.debug("dvd_type: " + dvd_type)
                 
             if dvd_type == "fail":
-                if title_mapping[disc.videotitle]:
-                    
-                    logging.debug("Calling webservice with title: " + title_mapping[disc.videotitle] + " and year: " + year)
-                    dvd_type = callwebservice(omdb_api_key, title_mapping[disc.videotitle], year)
-                    logging.debug("dvd_type: " + dvd_type)
+                if disc.videotitle in title_mapping:
+                    if title_mapping[disc.videotitle]:
+                        
+                        logging.debug("Calling webservice with title: " + title_mapping[disc.videotitle] + " and year: " + year)
+                        dvd_type = callwebservice(omdb_api_key, title_mapping[disc.videotitle], year)
+                        logging.debug("dvd_type: " + dvd_type)
 
             # if still fail, then try slicing off the last word in a loop
             while dvd_type == "fail" and dvd_title_clean.count('+') > 0:
