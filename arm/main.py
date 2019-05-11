@@ -213,6 +213,23 @@ def main(logfile, disc):
         else:
             if not cfg['SKIP_TRANSCODE']:
                 handbrake.handbrake_all(hbinpath, hboutpath, logfile, disc)
+            else:
+                
+                utils.notify("ARM notification", str(disc.videotitle) + " : Moving files.")
+
+                final_directory = os.path.join(cfg['MEDIA_DIR'], disc.videotitle + " (" + disc.videoyear + ")")
+                
+                logging.info("creating directory")
+                utils.make_dir(final_directory)
+                
+                logging.info("Moving files")
+                shutil.move(hbinpath, hboutpath)
+                
+                utils.notify("ARM notification", str(disc.videotitle) + " processing complete.")
+                utils.scan_kodi_video()
+                disc.eject()
+                logging.info("ARM processing complete")
+                
             disc.eject()
 
 
