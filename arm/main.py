@@ -219,11 +219,11 @@ def main(logfile, disc):
 
                 final_directory = os.path.join(cfg['MEDIA_DIR'], disc.videotitle + " (" + disc.videoyear + ")")
                 
-                logging.info("creating directory")
-                utils.make_dir(final_directory)
+               # logging.info("creating directory")
+               # utils.make_dir(final_directory)
                 
                 logging.info("Moving files")
-                shutil.move(hbinpath, hboutpath)
+                shutil.move(hbinpath, final_directory)
                 
                 utils.notify("ARM notification", str(disc.videotitle) + " processing complete.")
                 utils.scan_kodi_video()
