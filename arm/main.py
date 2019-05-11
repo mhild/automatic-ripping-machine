@@ -211,7 +211,8 @@ def main(logfile, disc):
             handbrake.handbrake_mainfeature(hbinpath, hboutpath, logfile, disc)
             disc.eject()
         else:
-            handbrake.handbrake_all(hbinpath, hboutpath, logfile, disc)
+            if not cfg['SKIP_TRANSCODE']:
+                handbrake.handbrake_all(hbinpath, hboutpath, logfile, disc)
             disc.eject()
 
 
