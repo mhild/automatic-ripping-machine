@@ -27,8 +27,8 @@ def check_key_valid():
 
 def write_settings(key):
 
-    path = "~/MakeMKV/settings.conf"
-    path_bak = "~/MakeMKV/settings.conf.bak"
+    path = "~/.MakeMKV/settings.conf"
+    path_bak = "~/.MakeMKV/settings.conf.bak"
 
     content = ('#\n'
     '# MakeMKV settings file, written by MakeMKV v1.14.3 linux(x64-release)\n'
