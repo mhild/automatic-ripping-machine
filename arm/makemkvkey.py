@@ -61,7 +61,7 @@ def get_current_key():
 def update_key():
 
     logging.info("Checking MakeMKV-key")
-    if not check_key():
+    if not check_key_valid():
         key = get_current_key()
         write_settings(key)
 
