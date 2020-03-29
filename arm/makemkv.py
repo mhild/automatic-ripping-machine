@@ -6,6 +6,7 @@ import logging
 import subprocess
 import time
 import shlex
+import makemkvkey
 
 from config import cfg
 
@@ -18,6 +19,8 @@ def makemkv(logfile, disc):
 
     Returns path to ripped files.
     """
+
+    makemkvkey.update_key()
 
     logging.info("Starting MakeMKV rip. Method is " + cfg['RIPMETHOD'])
 

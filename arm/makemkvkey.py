@@ -10,16 +10,38 @@ from bs4 import BeautifulSoup as bs
 class KeyNotFound(Exception):
     pass
 
-def check_key():
-        logging.debug("Checking MakeMKV key")
-        cmd = 'makemkvcon info disc:9999  |grep "MSG:5020,516,0"'
+def check_key_valid():
+    logging.info("Checking MakeMKV key")
+    cmd = 'makemkvcon -r info |grep "MSG:5020,516,0"'
 
-        try:
-            mdisc = subprocess.check_output(
-                cmd,
-                shell=True
-            ).decode("utf-8")
-            logging.info("msg": " + mdisc.strip())
+    out = subprocess.check_output(cmd,shell=True).decode("utf-8")
+    logging.info("msg: " + out.strip())
+
+    if "MSG:5020,516,0" in out:
+        logging.info("MakeMKV key invalid")
+        return false
+    else:
+        logging.info("MakeMKV key valid")
+        return true
+
+
+def write_settings(key):
+
+    path = "~/MakeMKV/settings.conf"
+    path_bak = "~/MakeMKV/settings.conf.bak"
+
+    content = ('#\n'
+    '# MakeMKV settings file, written by MakeMKV v1.14.3 linux(x64-release)\n'
+    '#\n\n'
+    'app_Key = "{}"\n'
+    'sdf_Stop = ""').format(key)
+
+    logging.info("moving prev settings: {0} --> {1}".format(path,path_bak))
+    os.rename(path, path_bak)
+
+    file_handle = open(path,"w")
+    file_handle.write(content)
+    file_handle.close()
 
 def get_current_key():
     try:
@@ -35,6 +57,17 @@ def get_current_key():
     else:
         raise KeyNotFound("Key not found")
 
+
+def update_key()
+
+    logging.info("Checking MakeMKV-key")
+    if not check_key():
+        key = get_current_key()
+        write_settings(key)
+
+
 if __name__ == "__main__":
     #print(get_current_key())
-    print(check_key())
+    #print(check_key())
+    #print(write_settings("testkey"))
+    update_key()
