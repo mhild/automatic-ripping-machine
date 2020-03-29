@@ -58,7 +58,7 @@ def get_current_key():
         raise KeyNotFound("Key not found")
 
 
-def update_key()
+def update_key():
 
     logging.info("Checking MakeMKV-key")
     if not check_key():
