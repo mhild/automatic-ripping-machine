@@ -5,7 +5,7 @@ import subprocess
 
 import requests
 from bs4 import BeautifulSoup as bs
-
+from pathlib import Path
 
 class KeyNotFound(Exception):
     pass
@@ -27,8 +27,9 @@ def check_key_valid():
 
 def write_settings(key):
 
-    path = "~/.MakeMKV/settings.conf"
-    path_bak = "~/.MakeMKV/settings.conf.bak"
+    home = str(Path.home())
+    path = home+"/.MakeMKV/settings.conf"
+    path_bak = home+"/.MakeMKV/settings.conf.bak"
 
     content = ('#\n'
     '# MakeMKV settings file, written by MakeMKV v1.14.3 linux(x64-release)\n'
