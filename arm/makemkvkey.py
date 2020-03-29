@@ -19,10 +19,10 @@ def check_key_valid():
 
     if "MSG:5020,516,0" in out:
         logging.info("MakeMKV key invalid")
-        return false
+        return False
     else:
         logging.info("MakeMKV key valid")
-        return true
+        return True
 
 
 def write_settings(key):
