@@ -15,7 +15,7 @@ def check_key_valid():
     cmd = 'makemkvcon -r info |grep "MSG:5020,516,0"'
 
 
-    out = subprocess.check_output(cmd,shell=True, check=False).decode("utf-8")
+    out = subprocess.run(cmd,shell=True, check=False).decode("utf-8")
     logging.info("msg: " + out.strip())
 
     if "MSG:5020,516,0" in out:
