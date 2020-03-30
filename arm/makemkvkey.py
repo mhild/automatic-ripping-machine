@@ -12,7 +12,7 @@ class KeyNotFound(Exception):
 
 def check_key_valid():
     logging.info("Checking MakeMKV key")
-    cmd = 'makemkvcon -r info'
+    cmd = 'makemkvcon -r info disc:9999'
 
 
     out = subprocess.check_output(cmd,shell=True).decode("utf-8")
