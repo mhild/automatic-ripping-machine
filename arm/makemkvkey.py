@@ -12,10 +12,10 @@ class KeyNotFound(Exception):
 
 def check_key_valid():
     logging.info("Checking MakeMKV key")
-    cmd = 'makemkvcon -r info |grep "MSG:5020,516,0"'
+    cmd = 'makemkvcon -r info'
 
 
-    out = subprocess.run(cmd,shell=True, check=False).decode("utf-8")
+    out = subprocess.check_output(cmd,shell=True).decode("utf-8")
     logging.info("msg: " + out.strip())
 
     if "MSG:5020,516,0" in out:
