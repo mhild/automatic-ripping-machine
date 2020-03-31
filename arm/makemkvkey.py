@@ -17,7 +17,7 @@ def check_key_valid():
     try:
         out = subprocess.check_output(cmd,shell=True).decode("utf-8")
     except:
-        logging.info("makemkvcon failed - skipping key-check")
+        logging.info("makemkvcon failed - assuming invalid key")
         return False
 
     logging.info("msg: " + out.strip())
@@ -53,6 +53,9 @@ def write_settings(key):
     file_handle.close()
 
 def get_current_key():
+
+    logging.info("makemkvcon - getting new key")
+
     try:
         r = requests.get('https://www.makemkv.com/forum/viewtopic.php?f=5&t=1053#p3548')
     except:
@@ -61,7 +64,8 @@ def get_current_key():
     if r.status_code == 200:
         bs_content = bs(r.content, "lxml")
         key = bs_content.find("code").get_text()
-
+        logging.info("makemkvcon - got new key")
+        logging.debug("makemkvcon - new key is '{}'".format(key))
         return key
     else:
         raise KeyNotFound("Key not found")
@@ -76,7 +80,7 @@ def update_key():
 
 
 if __name__ == "__main__":
-    #print(get_current_key())
-    #print(check_key())
+    print(get_current_key())
+    #print(check_key_valid())
     #print(write_settings("testkey"))
-    update_key()
+    #update_key()
