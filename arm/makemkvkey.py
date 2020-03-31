@@ -14,8 +14,12 @@ def check_key_valid():
     logging.info("Checking MakeMKV key")
     cmd = 'makemkvcon -r info disc:9999'
 
-
-    out = subprocess.check_output(cmd,shell=True).decode("utf-8")
+    try:
+        out = subprocess.check_output(cmd,shell=True).decode("utf-8")
+    except:
+        logging.info("makemkvcon failed - skipping key-check")
+        return Trueabs
+        
     logging.info("msg: " + out.strip())
 
     if "MSG:5020,516,0" in out:
