@@ -18,8 +18,8 @@ def check_key_valid():
         out = subprocess.check_output(cmd,shell=True).decode("utf-8")
     except:
         logging.info("makemkvcon failed - skipping key-check")
-        return Trueabs
-        
+        return False
+
     logging.info("msg: " + out.strip())
 
     if "MSG:5020,516,0" in out:
@@ -44,6 +44,9 @@ def write_settings(key):
 
     logging.info("moving prev settings: {0} --> {1}".format(path,path_bak))
     os.rename(path, path_bak)
+
+    logging.info("makemkvcon - writing settings")
+
 
     file_handle = open(path,"w")
     file_handle.write(content)
